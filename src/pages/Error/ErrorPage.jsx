@@ -1,8 +1,9 @@
 import { Link, useRouteError, useNavigate } from "react-router-dom";
-import "./Error.css"; // Import the CSS
+import "./ErrorPage.css"; // Import the CSS
 
 function ErrorPage() {
   const error = useRouteError();
+  /* eslint-disable-next-line no-console */
   console.error(error);
   const navigate = useNavigate();
 
@@ -33,7 +34,7 @@ function ErrorPage() {
         </svg>
       </div>
       <p className="error-text">
-        Let's get you back{" "}
+        Let&apos;s get you back{" "}
         <Link to="/" className="link">
           home
         </Link>

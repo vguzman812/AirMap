@@ -1,18 +1,18 @@
 import { createBrowserRouter } from "react-router-dom";
-import Home from "@/pages/Home/Home";
-import Map from "@/pages/Map/Map";
-import ErrorPage from "@/pages/Error/Error";
+import HomePage from "@/pages/Home/HomePage";
+import MapPage from "@/pages/Map/MapPage";
+import ErrorPage from "@/pages/Error/ErrorPage";
 
 // Create the router with all the routes
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <HomePage />,
     errorElement: <ErrorPage />,
   },
   {
     path: "/map",
-    element: <Map />,
+    element: <MapPage />,
     errorElement: <ErrorPage />,
   },
 ]);
