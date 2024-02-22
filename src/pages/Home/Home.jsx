@@ -1,6 +1,7 @@
 import { Typography, Stack, Container } from "@mui/material";
-
+import Box from "@mui/material/Box";
 import TemplateTester from "@/components/TemplateTester/TemplateTester";
+import Footer from "@/components/Footer/Footer";
 
 function Home() {
   return (
@@ -14,6 +15,7 @@ function Home() {
         </Typography>
       </Stack>
       <TemplateTester />
+      <Footer />
     </Container>
   );
 }
