@@ -41,7 +41,6 @@ export default function Hero() {
               flexDirection: { xs: "column", md: "row" },
               alignSelf: "center",
               textAlign: "center",
-
             }}
           >
             Welcome to &nbsp;

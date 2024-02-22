@@ -11,7 +11,7 @@ function Home() {
       <NavBar />
       <Hero />
       <Footer />
-      {/* <TemplateTester /> */}
+      <TemplateTester />
     </Box>
   );
 }
