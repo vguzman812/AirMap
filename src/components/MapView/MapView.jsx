@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Map, {
   Marker,
   Popup,
@@ -9,45 +9,54 @@ import Map, {
   ScaleControl,
   GeolocateControl,
 } from "react-map-gl";
-
+import {
+  Typography,
+  Grid,
+  Box,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import ControlPanel from "../ControlPanel/ControlPanel";
-
-// TODO: Change this to have the proper pins (airplanes and stuff)
 import Pin from "./PlaneIcons/Pin";
+import { getOpenSkyData, getTypeOfAircraft } from "@/services/openSkyService";
 
-// TODO: Change this to grab data from the OpenSky API
-import CITIES from "./cities.json";
+const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
-function MapView() {
-  const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
-
+function MapView({ center, zoom }) {
   const [popupInfo, setPopupInfo] = useState(null);
+  const [flightData, setFlightData] = useState(null);
 
+  useEffect(() => {
+    getOpenSkyData().then((data) => {
+      setFlightData(data.states);
+    });
+  }, []);
   const pins = useMemo(
     () =>
-      CITIES.map((city, index) => (
+      flightData?.map((plane) => (
         <Marker
-		// TODO: Change this to not use index as key
-          key={`marker-${index}`}
-          longitude={city.longitude}
-          latitude={city.latitude}
+          key={plane.icao24}
+          longitude={plane.longitude}
+          latitude={plane.latitude}
           anchor="bottom"
+          rotation={plane.trueTrack}
           onClick={(e) => {
             // If we let the click event propagates to the map, it will immediately close the popup
             // with `closeOnClick: true`
             e.originalEvent.stopPropagation();
-            setPopupInfo(city);
+            setPopupInfo(plane);
+            console.log(plane);
           }}
         >
-          <Pin />
+          <Pin grounded={plane.on_ground} verticalRate={plane.verticalRate} />
         </Marker>
       )),
-    [],
+    [flightData],
   );
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <Map
-        // className="mapView"
         mapboxAccessToken={TOKEN}
         initialViewState={{
           latitude: 40,
@@ -59,14 +68,18 @@ function MapView() {
         mapStyle="mapbox://styles/mapbox/dark-v9"
         transitionDuration={200}
       >
-        <GeolocateControl position="top-left" />
+        <GeolocateControl
+          position="top-left"
+          positionOptions={{ enableHighAccuracy: true }}
+          trackUserLocation="true"
+        />
         <FullscreenControl position="top-left" />
         <NavigationControl position="top-left" />
         <ScaleControl />
 
         {pins}
 
-{/* Change the popupInfo to better represent the data given by the OpenSky API */}
+        {/* TODO: Change the popupInfo to better represent the data given by the OpenSky API */}
         {popupInfo && (
           <Popup
             anchor="top"
@@ -74,16 +87,26 @@ function MapView() {
             latitude={Number(popupInfo.latitude)}
             onClose={() => setPopupInfo(null)}
           >
-            <div>
-              {popupInfo.city}, {popupInfo.state} |{" "}
-              <a
-                target="_new"
-                href={`http://en.wikipedia.org/w/index.php?title=Special:Search&search=${popupInfo.city}, ${popupInfo.state}`}
-              >
-                Wikipedia
-              </a>
-            </div>
-            <img width="100%" src={popupInfo.image} />
+            <Grid item xs={12} md={6}>
+              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
+                Callsign: {popupInfo.callsign}
+              </Typography>
+              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
+                Origin country: {popupInfo.originCountry}
+              </Typography>
+              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
+                Velocity: {popupInfo.velocity}
+              </Typography>
+              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
+                Altitude:{" "}
+                {popupInfo.barometricAltitude
+                  ? popupInfo.barometricAltitude
+                  : "N/A"}
+              </Typography>
+              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
+                Aircraft Type: {getTypeOfAircraft(popupInfo.category)}
+              </Typography>
+            </Grid>{" "}
           </Popup>
         )}
       </Map>
