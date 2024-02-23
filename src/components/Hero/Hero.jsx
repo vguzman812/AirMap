@@ -25,7 +25,7 @@ export default function Hero() {
           flexDirection: "column",
           alignItems: "center",
           pt: { xs: 14, sm: 20 },
-          pb: { xs: 8, sm: 12 },
+          pb: { xs: 8, sm: 6 },
         }}
       >
         <Stack
