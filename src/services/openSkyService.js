@@ -27,7 +27,6 @@ const getCleanedData = (data) => {
       squawk: rawStateVector[14],
       spi: rawStateVector[15],
       positionSource: rawStateVector[16],
-      category: rawStateVector[17],
     })),
   };
 

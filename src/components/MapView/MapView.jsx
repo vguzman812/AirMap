@@ -9,15 +9,8 @@ import Map, {
   ScaleControl,
   GeolocateControl,
 } from "react-map-gl";
-import {
-  Typography,
-  Grid,
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
-import ControlPanel from "../ControlPanel/ControlPanel";
+import { Typography, Grid, Button } from "@mui/material";
+import ControlPanel from "../InfoPanel/InfoPanel";
 import Pin from "./PlaneIcons/Pin";
 import { getOpenSkyData, getTypeOfAircraft } from "@/services/openSkyService";
 
@@ -26,12 +19,21 @@ const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 function MapView({ center, zoom }) {
   const [popupInfo, setPopupInfo] = useState(null);
   const [flightData, setFlightData] = useState(null);
+  const [isControlPanelOpen, setIsControlPanelOpen] = useState(false);
 
+  // Function to toggle the control panel visibility
+  const toggleControlPanel = () => {
+    setIsControlPanelOpen(!isControlPanelOpen);
+  };
+
+  // fetch data from OpenSky API
   useEffect(() => {
     getOpenSkyData().then((data) => {
       setFlightData(data.states);
     });
   }, []);
+
+  // make all the pins for the planes. This is a memoized function so it only runs when the flightData changes
   const pins = useMemo(
     () =>
       flightData?.map((plane) => (
@@ -110,7 +112,14 @@ function MapView({ center, zoom }) {
           </Popup>
         )}
       </Map>
-      <ControlPanel />
+      {isControlPanelOpen && <ControlPanel />}
+      <Button
+        variant="contained"
+        onClick={toggleControlPanel}
+        style={{ position: "absolute", top: 10, right: 10 }} // Position the button on the map
+      >
+        {isControlPanelOpen ? "Hide Info Panel" : "Show Info Panel"}
+      </Button>
     </div>
   );
 }
