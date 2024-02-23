@@ -2,7 +2,6 @@ import * as React from "react";
 import "./infoPanel.css";
 import { Typography } from "@mui/material";
 
-// TODO: Change this so that it shows a back button for the user, and just infromation on what I'm grabbing and how.
 export default function InfoPanel() {
   return (
     <div className="info-panel">
