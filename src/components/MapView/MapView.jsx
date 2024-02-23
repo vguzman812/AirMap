@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import InfoPanel from "../InfoPanel/InfoPanel";
 import Pin from "./PlaneIcons/Pin";
-import { getOpenSkyData, getTypeOfAircraft } from "@/services/openSkyService";
+import { getOpenSkyData } from "@/services/openSkyService";
 
 const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -162,9 +162,6 @@ function MapView({ center, zoom }) {
                 {popupInfo.barometricAltitude
                   ? popupInfo.barometricAltitude
                   : "N/A"}
-              </Typography>
-              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
-                Aircraft Type: {getTypeOfAircraft(popupInfo.category)}
               </Typography>
             </Grid>{" "}
           </Popup>
