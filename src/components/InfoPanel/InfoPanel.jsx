@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./infoPanel.css";
-import { Typography } from "@mui/material";
+import { Typography, Link } from "@mui/material";
 
 export default function InfoPanel() {
   return (
@@ -10,25 +10,14 @@ export default function InfoPanel() {
       </Typography>
       <Typography variant="body1" component="p">
         This application was created using the{" "}
-        <Typography
-          component="a"
-          href="https://openskynetwork.github.io/opensky-api/rest.html"
-        >
+        <Link href="https://openskynetwork.github.io/opensky-api/rest.html">
           OpenSky Network API
-        </Typography>{" "}
+        </Link>{" "}
         and{" "}
-        <Typography component="a" href="https://visgl.github.io/react-map-gl/">
-          React Map GL
-        </Typography>
+        <Link href="https://visgl.github.io/react-map-gl/">React Map GL</Link>
       </Typography>
 
-      <Typography
-        variant="a"
-        component="a"
-        href="https://www.github.com/vguzman812/airmap"
-      >
-        View Code ↗
-      </Typography>
+      <Link href="https://www.github.com/vguzman812/airmap">View Code ↗</Link>
     </div>
   );
 }

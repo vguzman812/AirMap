@@ -25,7 +25,7 @@ import { getOpenSkyData } from "@/services/openSkyService";
 
 const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
-function MapView({ center, zoom }) {
+function MapView() {
   const [popupInfo, setPopupInfo] = useState(null);
   const [flightData, setFlightData] = useState(null);
   const [isInfoPanelOpen, setIsInfoPanelOpen] = useState(false);
@@ -46,6 +46,7 @@ function MapView({ center, zoom }) {
       try {
         const data = await getOpenSkyData();
         setFlightData(data.states);
+        console.log("finished fetching");
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setSnackbarMessage(
@@ -57,7 +58,6 @@ function MapView({ center, zoom }) {
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
@@ -76,7 +76,6 @@ function MapView({ center, zoom }) {
             // with `closeOnClick: true`
             e.originalEvent.stopPropagation();
             setPopupInfo(plane);
-            console.log(plane);
           }}
         >
           <Pin grounded={plane.on_ground} verticalRate={plane.verticalRate} />
@@ -116,57 +115,76 @@ function MapView({ center, zoom }) {
         </Alert>
       </Snackbar>
 
-      <Map
-        mapboxAccessToken={TOKEN}
-        initialViewState={{
-          latitude: 40,
-          longitude: -100,
-          zoom: 3.5,
-          bearing: 0,
-          pitch: 0,
-        }}
-        mapStyle="mapbox://styles/mapbox/dark-v9"
-        transitionDuration={200}
-      >
-        <GeolocateControl
-          position="top-left"
-          positionOptions={{ enableHighAccuracy: true }}
-          trackUserLocation="true"
-        />
-        <FullscreenControl position="top-left" />
-        <NavigationControl position="top-left" />
-        <ScaleControl />
+      {!isLoading && (
+        <Map
+          mapboxAccessToken={TOKEN}
+          initialViewState={{
+            latitude: 40,
+            longitude: -100,
+            zoom: 3.5,
+            bearing: 0,
+            pitch: 0,
+          }}
+          mapStyle="mapbox://styles/mapbox/dark-v9"
+          transitionDuration={200}
+        >
+          <GeolocateControl
+            position="top-left"
+            positionOptions={{ enableHighAccuracy: true }}
+            trackUserLocation="true"
+          />
+          <FullscreenControl position="top-left" />
+          <NavigationControl position="top-left" />
+          <ScaleControl />
 
-        {pins}
+          {pins}
 
-        {/* a tooltip essentially for each plane */}
-        {popupInfo && (
-          <Popup
-            anchor="top"
-            longitude={Number(popupInfo.longitude)}
-            latitude={Number(popupInfo.latitude)}
-            onClose={() => setPopupInfo(null)}
-          >
-            <Grid item xs={12} md={6}>
-              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
-                Callsign: {popupInfo.callsign}
-              </Typography>
-              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
-                Origin country: {popupInfo.originCountry}
-              </Typography>
-              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
-                Velocity: {popupInfo.velocity}
-              </Typography>
-              <Typography sx={{ mt: 2, mb: 2 }} variant="body1" component="div">
-                Altitude:{" "}
-                {popupInfo.barometricAltitude
-                  ? popupInfo.barometricAltitude
-                  : "N/A"}
-              </Typography>
-            </Grid>{" "}
-          </Popup>
-        )}
-      </Map>
+          {/* a tooltip essentially for each plane */}
+          {popupInfo && (
+            <Popup
+              anchor="top"
+              longitude={Number(popupInfo.longitude)}
+              latitude={Number(popupInfo.latitude)}
+              onClose={() => setPopupInfo(null)}
+            >
+              <Grid item xs={12} md={6}>
+                <Typography
+                  sx={{ mt: 2, mb: 2 }}
+                  variant="body1"
+                  component="div"
+                >
+                  Callsign: {popupInfo.callsign}
+                </Typography>
+                <Typography
+                  sx={{ mt: 2, mb: 2 }}
+                  variant="body1"
+                  component="div"
+                >
+                  Origin country: {popupInfo.originCountry}
+                </Typography>
+                <Typography
+                  sx={{ mt: 2, mb: 2 }}
+                  variant="body1"
+                  component="div"
+                >
+                  Velocity: {popupInfo.velocity} m/s
+                </Typography>
+                <Typography
+                  sx={{ mt: 2, mb: 2 }}
+                  variant="body1"
+                  component="div"
+                >
+                  Altitude:{" "}
+                  {popupInfo.barometricAltitude
+                    ? popupInfo.barometricAltitude
+                    : "N/A"}{" "}
+                  meters
+                </Typography>
+              </Grid>{" "}
+            </Popup>
+          )}
+        </Map>
+      )}
       {isInfoPanelOpen && <InfoPanel />}
       {/* button to open the infopanel */}
       <Button
