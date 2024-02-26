@@ -3,26 +3,15 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useState, useMemo, useEffect } from "react";
 
-import Map, {
-  Popup,
-  NavigationControl,
-  FullscreenControl,
-  ScaleControl,
-  GeolocateControl,
-} from "react-map-gl";
+import Map, { Popup } from "react-map-gl";
 
-import {
-  Typography,
-  Grid,
-  Button,
-  CircularProgress,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Typography, Grid, Button, CircularProgress } from "@mui/material";
 
 import InfoPanel from "../InfoPanel/InfoPanel";
 import useFlightData from "@/services/openSkyService";
 import PlaneMarker from "../PlaneMarker/PlaneMarker";
+import MapControl from "../MapControl/MapControl";
+import ErrorSnackbar from "../ErrorSnackbar/ErrorSnackbar";
 
 const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -81,21 +70,11 @@ function MapView() {
         </div>
       )}
       {/* snackbar and alert for error popups */}
-      <Snackbar
+      <ErrorSnackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
+        message={snackbarMessage}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          variant="filled"
-          onClose={() => setSnackbarOpen(false)}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      />
 
       {!isLoading && (
         <Map
@@ -110,14 +89,7 @@ function MapView() {
           mapStyle="mapbox://styles/mapbox/dark-v9"
           transitionDuration={200}
         >
-          <GeolocateControl
-            position="top-left"
-            positionOptions={{ enableHighAccuracy: true }}
-            trackUserLocation="true"
-          />
-          <FullscreenControl position="top-left" />
-          <NavigationControl position="top-left" />
-          <ScaleControl />
+          <MapControl position="top-left" />
 
           {pins}
 
