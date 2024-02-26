@@ -1,4 +1,4 @@
-import { Typography, Stack, Box } from "@mui/material";
+import { Box } from "@mui/material";
 
 import Footer from "@/components/Footer/Footer";
 import Hero from "@/components/Hero/Hero";

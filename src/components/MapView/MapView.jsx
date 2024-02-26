@@ -2,15 +2,15 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import Map, {
-  Marker,
   Popup,
   NavigationControl,
   FullscreenControl,
   ScaleControl,
   GeolocateControl,
 } from "react-map-gl";
+
 import {
   Typography,
   Grid,
@@ -19,67 +19,49 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+
 import InfoPanel from "../InfoPanel/InfoPanel";
-import Pin from "./PlaneIcons/Pin";
-import { getOpenSkyData } from "@/services/openSkyService";
+import useFlightData from "@/services/openSkyService";
+import PlaneMarker from "../PlaneMarker/PlaneMarker";
 
 const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
 function MapView() {
   const [popupInfo, setPopupInfo] = useState(null);
-  const [flightData, setFlightData] = useState(null);
+  const { flightData, isLoading, error } = useFlightData();
   const [isInfoPanelOpen, setIsInfoPanelOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const navigate = useNavigate();
 
   // Function to toggle the control panel visibility
   const toggleInfoPanel = () => {
     setIsInfoPanelOpen(!isInfoPanelOpen);
   };
 
-  // fetch data from OpenSky API
+  // snackbar error handling
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getOpenSkyData();
-        setFlightData(data.states);
-        console.log("finished fetching");
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-        setSnackbarMessage(
-          `Failed to load data from OpenSky API. ${error.message}` ||
-            "An unexpected error occurred.",
-        );
-        setSnackbarOpen(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+    if (error) {
+      setSnackbarMessage(
+        `Failed to load data from OpenSky API. ${error.message || "An unexpected error occurred."}`,
+      );
+      setSnackbarOpen(true);
+    }
+  }, [error]);
 
-  // make all the pins for the planes. This is a memoized function so it only runs when the flightData changes
+  // Memoize the pins to avoid unnecessary re-renders
   const pins = useMemo(
     () =>
       flightData?.map((plane) => (
-        <Marker
+        <PlaneMarker
           key={plane.icao24}
-          longitude={plane.longitude}
-          latitude={plane.latitude}
-          anchor="bottom"
-          rotation={plane.trueTrack}
+          plane={plane}
           onClick={(e) => {
             // If we let the click event propagates to the map, it will immediately close the popup
             // with `closeOnClick: true`
             e.originalEvent.stopPropagation();
             setPopupInfo(plane);
           }}
-        >
-          <Pin grounded={plane.on_ground} verticalRate={plane.verticalRate} />
-        </Marker>
+        />
       )),
     [flightData],
   );
@@ -197,7 +179,7 @@ function MapView() {
       {/* Home button */}
       <Button
         variant="contained"
-        onClick={() => navigate("/")}
+        href="/"
         style={{ position: "absolute", top: 10, right: 250 }}
         color="error"
       >

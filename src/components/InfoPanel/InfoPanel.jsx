@@ -1,4 +1,3 @@
-import * as React from "react";
 import "./infoPanel.css";
 import { Typography, Link } from "@mui/material";
 

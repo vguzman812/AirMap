@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useState, useEffect } from "react";
 
 const baseURL = "https://opensky-network.org/api/states/all";
 
@@ -40,4 +41,27 @@ const getOpenSkyData = async () => {
   return stateVectors;
 };
 
-export { getOpenSkyData, getCleanedData };
+// A custom hook that gives the component data about our API call
+export default function useFlightData() {
+  const [flightData, setFlightData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await getOpenSkyData();
+        setFlightData(data.states);
+      } catch (e) {
+        setError(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return { flightData, isLoading, error };
+}
