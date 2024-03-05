@@ -7,6 +7,8 @@ A platform for visualizing real-time flight data.
 This project uses Mapbox through the React Map GL library, and the OpenSky Network API to get real-time aircraft info.
 Note that there is a limit of 400 credits per day. A global query(all planes in the sky right now) costs 4 credits. Therefore, there are around 100 daily requests from OpenSky Network API for those without accounts.
 
+![a gif of the app in use.](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGd3ZzJldWMyOThsZW13dTJudmdqaTFpbHBhNGdheTJ0bXlteGhveiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/I0nAUjkvIwR6AqJOWn/giphy.gif)
+
 ## Built With
 ![image](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![image](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
@@ -43,7 +45,7 @@ If I had more time, here are a few of the things I would love to implement:
 - Give the user the ability to filter the planes shown.
 - Look at having the pins being a separate layer so the size can change depending on the zoom level. This would give users a more visually pleasant and responsive map.
 - Check if calling the API based on currently observed geographic boundaries helps performance.
-  - Check if calling the API in sections like this would help with performance as well.
+  - Check if loading only currently observable pins helps with performance
 
 ## License
 
