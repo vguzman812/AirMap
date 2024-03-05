@@ -45,7 +45,8 @@ If I had more time, here are a few of the things I would love to implement:
 - Give the user the ability to filter the planes shown.
 - Look at having the pins being a separate layer so the size can change depending on the zoom level. This would give users a more visually pleasant and responsive map.
 - Check if calling the API based on currently observed geographic boundaries helps performance.
-  - Check if loading only currently observable pins helps with performance
+  - Check if loading only currently observable pins helps with performance.
+- Add layers to the map to allow filtering based on different parameters as well as legends.
 
 ## License
 
