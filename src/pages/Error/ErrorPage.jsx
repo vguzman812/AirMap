@@ -1,6 +1,5 @@
 import { Link, useRouteError, useNavigate } from "react-router-dom";
-import "./ErrorPage.css"; // Import the CSS
-
+import "./ErrorPage.css"; 
 function ErrorPage() {
   const error = useRouteError();
   /* eslint-disable-next-line no-console */
